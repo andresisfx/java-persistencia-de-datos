@@ -20,8 +20,10 @@ public class Serie {
     private Categoria genero;
     private String actores;
     private String sinopsis;
-    @Transient //ignora la realciones con episodios
+   // @Transient //ignora la realciones con episodios
+    @OneToMany(mappedBy = "serie")
     private List<Episodio>episodios;
+    public Serie(){} //este constructor tengo que agregarlo manualmente ya que java no lo proporciona
     public Serie(DatosSerie datosSeries) {
         this.titulo= datosSeries.titulo();
         this.totalTemporadas=datosSeries.totalTemporadas();

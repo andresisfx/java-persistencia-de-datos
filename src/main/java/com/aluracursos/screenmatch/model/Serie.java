@@ -21,7 +21,15 @@ public class Serie {
     private String actores;
     private String sinopsis;
    // @Transient //ignora la realciones con episodios
-    @OneToMany(mappedBy = "serie")
+
+    /*PERSIST: si persistes la entidad Post, los Comments relacionados también se persistirán.
+    MERGE: si fusionas los detalles de un Post, los Comments relacionados también se fusionarán.
+    REMOVE: si eliminas un Post, los Comments relacionados también se eliminarán.
+    REFRESH: si actualizas el Post, también se actualizarán los Comments relacionados.
+    DETACH: si un Post ha sido desanexado, todos los Comments relacionados también se desanexarán.
+    ALL: si realizas cualquiera de las operaciones anteriores en un Post, esa operación se propagará a todos los Comments relacionados.*/
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL,fetch = FetchType.EAGER)// escribimos cascade para hacer eliminacion de toda la relacion tanto series como sus episodios y tambien sus insersiones
+    //ademas usamos Fetchtype.EAGER cuando tenemos que solicitar muchoa datos a la vez
     private List<Episodio>episodios;
     public Serie(){} //este constructor tengo que agregarlo manualmente ya que java no lo proporciona
     public Serie(DatosSerie datosSeries) {
@@ -44,8 +52,18 @@ public class Serie {
                 ", evaluacion=" + evaluacion +
                 ", poster='" + poster + '\'' +
                 ", actores='" + actores + '\'' +
-                ", sinopsis='" + sinopsis + '\'';
+                ", sinopsis='" + sinopsis + '\''+
+                ", episodios='" + episodios + '\'';
 
+    }
+
+    public List<Episodio> getEpisodios() {
+        return episodios;
+    }
+
+    public void setEpisodios(List<Episodio> episodios) {
+        episodios.forEach(e->e.setSerie(this));
+        this.episodios = episodios;
     }
 
     public String getTitulo() {
